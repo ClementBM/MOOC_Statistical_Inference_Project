@@ -50,18 +50,11 @@ ggplot(data, aes(x=factor(dose), y=len)) +
 
 ## Growth analysis
 We now compare the six different groups with themselves. We suppose this is a randomized experiment, and that the groups are independents and that the variance is **not** constant between groups. We use a 95% T confidence interval to compare the groups. Here is a reminder of the detail of the t confidence interval calculation with an unequal variance, (we use `t.test(, var.equal=FALSE)`)
-$$
-\bar{Y} - \bar{X} \pm
-t_{df} \times ({s^2_x \over n_x} + {s^2_y \over n_y})^{1/2}
-$$
 
-with $t_{df}$ : $t$ quantile and $df$ equals to
-$$ df = {
-    (S^2_x / n_x + S^2_y / n_y)^2
-    \over
-    (S^2_x / n_x)^2 / (n_x - 1) +
-    (S^2_y / n_y)^2 / (n_y - 1)
-}$$
+![ttest](t-test.png)
+
+with t_df : t quantile and df equals to
+![df](df.png)
 
 Here is a table summing up the confidence intervals. Rows are compared with columns. For example: *Orange Juice 2mg/day* (OJ 2) is `15.8 to 20.36` mg/day better than *Ascorbic Acid 0.5mg/day* (AA 0.5).
 
