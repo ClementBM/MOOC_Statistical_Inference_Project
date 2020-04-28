@@ -7,7 +7,7 @@ output:
     df_print: paged
 ---
 
-```{r setup, include=FALSE}
+```R
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 We make an analysis on an experiment made on 60 pigs, trying to find the effect of `Orange Juice` and `Ascorbic Acid` on tooth growth. The metric is the length of odontoblast, evaluated in milligrams/day.
 
 ## Exploratory Data Analysis
-```{r, echo=FALSE, message=FALSE}
+```R
 library(ggplot2)
 library(dplyr)
 library(knitr)
@@ -23,7 +23,7 @@ library(e1071)
 ```
 
 Here is a table with the count, variance, quartiles of each group.
-```{r}
+```R
 data <- ToothGrowth
 levels(data$supp) <- c("Orange Juice", "Ascorbic Acid")
 groupData <- data %>% group_by(supp, dose)
@@ -34,10 +34,10 @@ kable(groupData %>% summarise(n = n(),  mean = mean(len), variance = var(len),
                               skewness = skewness(len),
                               kurtosis = kurtosis(len)))
 ```
-
+![EDA](eda.png)
 We can already see that groups do not have the same variance.
 
-```{r, fig.height=3.5}
+```R
 ggplot(data, aes(x=factor(dose), y=len)) + 
  facet_grid(.~supp) +
  geom_violin(aes(fill = supp), show.legend = FALSE) +
@@ -45,6 +45,7 @@ ggplot(data, aes(x=factor(dose), y=len)) +
       x="Dose (mg/day)",
       y="Tooth growth")
 ```
+![Violin Plot](violinplot.png)
 
 
 ## Growth analysis
@@ -64,7 +65,7 @@ $$ df = {
 
 Here is a table summing up the confidence intervals. Rows are compared with columns. For example: *Orange Juice 2mg/day* (OJ 2) is `15.8 to 20.36` mg/day better than *Ascorbic Acid 0.5mg/day* (AA 0.5).
 
-```{r, results='asis', echo=FALSE}
+```R
 combinations <- list(c("Orange Juice", 0.5), 
                      c("Orange Juice", 1), 
                      c("Orange Juice", 2),
@@ -100,9 +101,10 @@ colnames(confidenceMatrix) <- colName
 
 kable(confidenceMatrix)
 ```
+![confidence intervals](confidenceintervals.png)
 
 Similarly, this a table sum up the p-Values in percentage
-```{r, results='asis', echo=FALSE}
+```R
 testStat <- function(combination) {
   baseSubset <- subset(data, supp == combination[1] & dose == combination[2])
   lapply(combinations, function(comb){
@@ -128,7 +130,7 @@ colnames(confidenceMatrix) <- colName
 
 kable(confidenceMatrix)
 ```
-
+![pvalues](pvalues.png)
 
 ## Conclusions
 We can see that Ascorbic Acid had relevant improvement as the dose increase. In opposition as the dose of Orange Juice increase the growth does not increase significantly. Comparing the two supplements with equal dose does not show a relevant difference of growth either. For example the confidence interval comparing *Orange Juice 2mg/day* (OJ 2) with *Ascorbic Acid 0.5mg/day* (AA 2) is *-4.329:4.169* it contains zero, therefore the difference is not significant with a 95% confidence interval.
